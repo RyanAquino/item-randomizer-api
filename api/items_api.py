@@ -10,23 +10,6 @@ from flask import send_file
 from flask_restful import Resource
 
 
-class ItemResource(Resource):
-    """
-    Item API Resource
-    """
-    def get(self, item_id: int):
-        """
-        Retrieve Item object details
-        :param item_id: Item id
-        :return: Item object details
-        """
-        # Count alphabet strings
-        # Count real numbers
-        # Count integers
-        # Count alphanumeric strings
-        return {"get": f"/v1/items/{item_id}"}
-
-
 class DownloadableItemResource(Resource):
     """
     Downloadable file Item API Resource
@@ -99,8 +82,8 @@ class ItemsResource(Resource):
         max_file_size = ((1024 * 1024) * 2) - file_size_buffer  # 2MB
 
         with open(file_name, 'w') as f:
-            file_size = os.stat(file_name).st_size
             f.truncate()
+            file_size = os.stat(file_name).st_size
             while file_size <= max_file_size:
                 func_list = [
                     self._generate_random_alphabet_strings,
@@ -113,3 +96,14 @@ class ItemsResource(Resource):
                 file_size = os.stat(file_name).st_size
 
         return {"file_name": file_name}, 201
+
+    def get(self):
+        """
+        Retrieve Item object details
+        :return: Item object details
+        """
+        # Count alphabet strings
+        # Count real numbers
+        # Count integers
+        # Count alphanumeric strings
+        return {"get": f"/v1/item"}
