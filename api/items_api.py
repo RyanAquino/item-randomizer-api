@@ -2,7 +2,7 @@
 Items API module
 """
 import string
-from random import choice
+from random import choice, randint
 from uuid import uuid4
 from typing import Optional
 
@@ -51,8 +51,13 @@ class ItemsResource(Resource):
     def _generate_random_real_numbers(self):
         pass
 
-    def _generate_random_integers(self):
-        pass
+    @staticmethod
+    def _generate_random_integers():
+        """
+        Generate a random integer from range 100,000 to 900,000
+        :return: Generated random integer
+        """
+        return randint(100000, 900000)
 
     def _generate_random_alphanumerics(self):
         pass
