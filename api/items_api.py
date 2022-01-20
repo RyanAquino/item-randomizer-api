@@ -2,7 +2,7 @@
 Items API module
 """
 import string
-from random import choice, randint
+from random import choice, randint, uniform
 from uuid import uuid4
 from typing import Optional
 
@@ -48,8 +48,13 @@ class ItemsResource(Resource):
         """
         return "".join(choice(string.ascii_letters) for _ in range(n))
 
-    def _generate_random_real_numbers(self):
-        pass
+    @staticmethod
+    def _generate_random_real_numbers():
+        """
+        Generate random real number in between of values 1.5 to 1.9
+        :return: Generated real number
+        """
+        return uniform(1.5, 1.9)
 
     @staticmethod
     def _generate_random_integers():
