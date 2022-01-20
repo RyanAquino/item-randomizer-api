@@ -1,9 +1,9 @@
 """
 Items API module
 """
+import os
 import string
 from random import choice, randint, uniform
-from uuid import uuid4
 from typing import Optional
 
 from flask_restful import Resource
@@ -40,7 +40,7 @@ class ItemsResource(Resource):
     Generate Items API Resource
     """
     @staticmethod
-    def _generate_random_alphabet_strings(n: Optional[int] = 10):
+    def _generate_random_alphabet_strings(n: Optional[int] = 10) -> str:
         """
         Generate a random alphabetical string
         :param n: Number of characters to be generated; default to 10
@@ -49,35 +49,52 @@ class ItemsResource(Resource):
         return "".join(choice(string.ascii_letters) for _ in range(n))
 
     @staticmethod
-    def _generate_random_real_numbers():
+    def _generate_random_real_numbers() -> str:
         """
         Generate random real number in between of values 1.5 to 1.9
-        :return: Generated real number
+        :return: Generated real number in string format
         """
-        return uniform(1.5, 1.9)
+        return str(uniform(1.5, 1.9))
 
     @staticmethod
-    def _generate_random_integers():
+    def _generate_random_integers() -> str:
         """
         Generate a random integer from range 100,000 to 900,000
-        :return: Generated random integer
+        :return: Generated random integer in string format
         """
-        return randint(100000, 900000)
+        return str(randint(100000, 900000))
 
-    def _generate_random_alphanumerics(self):
-        pass
+    @staticmethod
+    def _generate_random_alphanumerics(n: Optional[int] = 10) -> str:
+        """
+        Generate a random alphanumeric string
+        :return: Generated alphanumeric string
+        """
+        return "".join(choice(f"{string.ascii_letters}0123456789") for _ in range(n))
 
     def post(self):
         """
-        Generate items and store in a file
-        :return: None
+        Generate items and store in a file with 2MB size
+        :return: file name
         """
-        file_name = str(uuid4())
-        file_size = (1024 * 1024) * 2  # 2MB
+        file_name = "output.txt"
+        file_size_buffer = 10000
+        max_file_size = ((1024 * 1024) * 2) - file_size_buffer  # 2MB
+        open(file_name, "w")
+        file_size = os.stat(file_name).st_size
 
-        with open(f"generated_items/{file_name}.txt", 'w') as f:
-            num_chars = file_size
-            # Add unless reach/over total file size
-            # Get len + 1 (comma)
+        with open(file_name, 'w') as f:
+            f.truncate()
+            while file_size <= max_file_size:
+                func_list = [
+                    self._generate_random_alphabet_strings,
+                    self._generate_random_real_numbers,
+                    self._generate_random_integers,
+                    self._generate_random_alphanumerics
+                ]
+                output = choice(func_list)()
+                f.write(f"{output}, ")
+                file_size = os.stat(file_name).st_size
 
-        return {"id": file_name}, 201
+            f.close()
+        return {"file_name": file_name}, 201
