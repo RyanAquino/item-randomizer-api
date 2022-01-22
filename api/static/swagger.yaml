@@ -1,0 +1,37 @@
+swagger: "2.0"
+info:
+  description: "Generates 4 type of random objects that includes Alphabets, Integers, real numbers and Alphanumeric which is written in a 2mb text file"
+  version: "1.0.0"
+  title: "Item Randomizer API"
+host: "127.0.0.1:5000"
+basePath: "/v1"
+tags:
+- name: "Items"
+  description: "Item object"
+paths:
+  /item:
+    get:
+      tags:
+      - "Items"
+      summary: "Retrieve Item details"
+      description: "Retrieve Item  Alphabets, Integers, real numbers and Alphanumeric count"
+      responses:
+        "200":
+          description: "Successfully Retrieved"
+        "404":
+          description: "File not found"
+    post:
+      tags:
+      - "Items"
+      summary: "Generate random items in a file"
+      responses:
+        "201":
+          description: "Generated Successfully"
+  /item/download:
+    get:
+      tags:
+      - "Items"
+      summary: "Download generated file with random items"
+      responses:
+        "200":
+          description: "Downloaded Successfully"
