@@ -6,33 +6,33 @@ import string
 from random import choice, randint, uniform
 from typing import Optional
 
+from flask import send_file
 from flask_restful import Resource
-
-
-class ItemResource(Resource):
-    """
-    Item API Resource
-    """
-    def get(self, item_id: int):
-        """
-        Retrieve Item object details
-        :param item_id: Item id
-        :return: Item object details
-        """
-        return {"get": f"/v1/items/{item_id}"}
 
 
 class DownloadableItemResource(Resource):
     """
     Downloadable file Item API Resource
     """
-    def get(self, item_id: int):
+
+    def get(self):
         """
         Retrieve Item object file
-        :param item_id: Item id
         :return: Item object file
         """
-        return {"get": f"/v1/items/{item_id}/download"}
+        file_name = "output.txt"
+        file_path = f"../{file_name}"
+
+        if not os.path.exists(file_name):
+            return {"detail": "File not found"}, 404
+
+        response = send_file(
+            path_or_file=file_path,
+            mimetype="application/octet-stream",
+            as_attachment=True,
+            attachment_filename=file_name
+        )
+        return response
 
 
 class ItemsResource(Resource):
@@ -80,11 +80,10 @@ class ItemsResource(Resource):
         file_name = "output.txt"
         file_size_buffer = 10000
         max_file_size = ((1024 * 1024) * 2) - file_size_buffer  # 2MB
-        open(file_name, "w")
-        file_size = os.stat(file_name).st_size
 
         with open(file_name, 'w') as f:
             f.truncate()
+            file_size = os.stat(file_name).st_size
             while file_size <= max_file_size:
                 func_list = [
                     self._generate_random_alphabet_strings,
@@ -96,5 +95,15 @@ class ItemsResource(Resource):
                 f.write(f"{output}, ")
                 file_size = os.stat(file_name).st_size
 
-            f.close()
         return {"file_name": file_name}, 201
+
+    def get(self):
+        """
+        Retrieve Item object details
+        :return: Item object details
+        """
+        # Count alphabet strings
+        # Count real numbers
+        # Count integers
+        # Count alphanumeric strings
+        return {"get": f"/v1/item"}
