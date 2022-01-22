@@ -9,6 +9,7 @@ from typing import Optional
 
 from flask import send_file
 from flask_restful import Resource
+from api.validators import Item
 
 
 class DownloadableItemResource(Resource):
@@ -104,12 +105,7 @@ class ItemsResource(Resource):
         Retrieve Item object details
         :return: Item object details
         """
-        response = {
-            "alphabet": 0,
-            "real_numbers": 0,
-            "integers": 0,
-            "alphanumeric": 0,
-        }
+        response = Item()
 
         if not os.path.exists(self.file_name):
             return {"detail": "File not found"}, 404
@@ -121,18 +117,18 @@ class ItemsResource(Resource):
 
             for item in content_items:
                 if item.isalpha():
-                    response["alphabet"] += 1
+                    response.alphabet += 1
                     continue
 
                 if item.isalnum() and not item.isalpha() and not item.isdigit():
-                    response["alphanumeric"] += 1
+                    response.alphanumeric += 1
                     continue
 
                 item_found = re.findall("[0-9]+", item)
 
                 if item_found and item_found[0] == item:
-                    response["integers"] += 1
+                    response.integers += 1
                 else:
-                    response["real_numbers"] += 1
+                    response.real_numbers += 1
 
-        return response
+        return response.dict()
