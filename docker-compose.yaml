@@ -1,0 +1,12 @@
+version: "3.1"
+services:
+  web:
+    container_name: "item-randomizer-api"
+    build:
+      context: .
+    ports:
+      - 5000:5000
+    volumes:
+      - ".:/app"
+    expose:
+      - 5000
