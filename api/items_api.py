@@ -2,6 +2,7 @@
 Items API module
 """
 import os
+import re
 import string
 from random import choice, randint, uniform
 from typing import Optional
@@ -39,6 +40,8 @@ class ItemsResource(Resource):
     """
     Generate Items API Resource
     """
+    file_name = "output.txt"
+
     @staticmethod
     def _generate_random_alphabet_strings(n: Optional[int] = 10) -> str:
         """
@@ -77,13 +80,12 @@ class ItemsResource(Resource):
         Generate items and store in a file with 2MB size
         :return: file name
         """
-        file_name = "output.txt"
         file_size_buffer = 10000
         max_file_size = ((1024 * 1024) * 2) - file_size_buffer  # 2MB
 
-        with open(file_name, 'w') as f:
+        with open(self.file_name, 'w') as f:
             f.truncate()
-            file_size = os.stat(file_name).st_size
+            file_size = os.stat(self.file_name).st_size
             while file_size <= max_file_size:
                 func_list = [
                     self._generate_random_alphabet_strings,
@@ -93,17 +95,44 @@ class ItemsResource(Resource):
                 ]
                 output = choice(func_list)()
                 f.write(f"{output}, ")
-                file_size = os.stat(file_name).st_size
+                file_size = os.stat(self.file_name).st_size
 
-        return {"file_name": file_name}, 201
+        return {"file_name": self.file_name}, 201
 
     def get(self):
         """
         Retrieve Item object details
         :return: Item object details
         """
-        # Count alphabet strings
-        # Count real numbers
-        # Count integers
-        # Count alphanumeric strings
-        return {"get": f"/v1/item"}
+        response = {
+            "alphabet": 0,
+            "real_numbers": 0,
+            "integers": 0,
+            "alphanumeric": 0,
+        }
+
+        if not os.path.exists(self.file_name):
+            return {"detail": "File not found"}, 404
+
+        with open(self.file_name) as f:
+            contents = f.read()
+            content_items = contents.split(", ")
+            content_items = content_items[:-1]
+
+            for item in content_items:
+                if item.isalpha():
+                    response["alphabet"] += 1
+                    continue
+
+                if item.isalnum() and not item.isalpha() and not item.isdigit():
+                    response["alphanumeric"] += 1
+                    continue
+
+                item_found = re.findall("[0-9]+", item)
+
+                if item_found and item_found[0] == item:
+                    response["integers"] += 1
+                else:
+                    response["real_numbers"] += 1
+
+        return response
