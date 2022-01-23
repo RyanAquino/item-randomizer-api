@@ -1,4 +1,4 @@
-from unittest.mock import patch, mock_open
+from unittest.mock import mock_open, patch
 
 from api.items_api import ItemsResource
 
@@ -32,7 +32,9 @@ class TestItemsResource:
         assert response.json == {"file_name": "output.txt"}
 
     @patch("os.path.exists")
-    @patch("builtins.open", new_callable=mock_open, read_data="1234, abcd, abc123, 1.7, ")
+    @patch(
+        "builtins.open", new_callable=mock_open, read_data="1234, abcd, abc123, 1.7, "
+    )
     def test_retrieve_details_endpoint(self, mock_file, os_path, client):
         response = client.get("/v1/item")
         assert response.status_code == 200
