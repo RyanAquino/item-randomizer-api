@@ -7,9 +7,7 @@ RUN set -e; \
                 gcc \
                 libc-dev \
                 linux-headers \
-                mariadb-dev \
                 python3-dev \
-                postgresql-dev \
         ;
 
 COPY . /app
