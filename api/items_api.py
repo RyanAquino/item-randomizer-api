@@ -74,7 +74,7 @@ class ItemsResource(Resource):
         Generate a random alphanumeric string
         :return: Generated alphanumeric string
         """
-        return "".join(choice(f"{string.ascii_letters}0123456789") for _ in range(n))
+        return "".join(choice(f"{string.ascii_letters}{string.digits}") for _ in range(n))
 
     def post(self):
         """
