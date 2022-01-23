@@ -6,7 +6,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from api import api, app
 from api.items_api import DownloadableItemResource, ItemsResource
 
-
 SWAGGER_URL = "/api-docs"
 API_URL = "/static/swagger.yaml"
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
